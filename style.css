@@ -242,8 +242,7 @@ body.dark-theme .theme-toggle__icon--sun {
 }
 
 .layout {
-  display: grid;
-  grid-template-columns: 224px minmax(0, 1fr);
+  display: block;
   min-height: calc(100vh - 62px);
 }
 
@@ -301,6 +300,7 @@ body.dark-theme .theme-toggle__icon--sun {
 }
 
 .content {
+  width: 100%;
   padding: 22px 28px 40px;
 }
 
@@ -666,25 +666,6 @@ body.dark-theme .note-card:hover {
 }
 
 @media (max-width: 900px) {
-  .layout {
-    grid-template-columns: 1fr;
-  }
-
-  .sidebar {
-    position: fixed;
-    top: 62px;
-    left: 0;
-    bottom: 0;
-    width: 224px;
-    z-index: 20;
-    box-shadow: 12px 0 24px rgba(39, 29, 18, 0.12);
-    transform: translateX(-100%);
-  }
-
-  body.sidebar-open .sidebar {
-    transform: translateX(0);
-  }
-
   .content {
     padding-left: 20px;
     padding-right: 20px;

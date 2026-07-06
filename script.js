@@ -352,11 +352,6 @@ function toggleTheme() {
   applyTheme();
   saveTheme();
 }
-
-function toggleSidebar() {
-  document.body.classList.toggle("sidebar-open");
-}
-
 function closeSidebarOnMobile() {
   if (window.innerWidth <= 900) {
     document.body.classList.remove("sidebar-open");
@@ -386,7 +381,6 @@ function bindEvents() {
     window.setTimeout(() => updateComposerState(false), 0);
   });
   elements.themeToggle.addEventListener("click", toggleTheme);
-  elements.menuToggle.addEventListener("click", toggleSidebar);
   elements.editModal.addEventListener("click", (event) => {
     if (event.target.hasAttribute("data-close-modal")) {
       closeEditModal();
