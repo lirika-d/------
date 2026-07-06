@@ -1,59 +1,101 @@
 const STORAGE_KEYS = {
   notes: "notes-app-notes",
-  theme: "notes-app-theme"
+  theme: "notes-app-theme",
+  language: "notes-app-language"
 };
 
 const COLOR_OPTIONS = [
-  { key: "white", label: "Ivory", className: "note-color--white" },
-  { key: "yellow", label: "Honey", className: "note-color--yellow" },
-  { key: "green", label: "Sage", className: "note-color--green" },
-  { key: "blue", label: "Sky", className: "note-color--blue" },
-  { key: "pink", label: "Rose", className: "note-color--pink" },
-  { key: "lilac", label: "Lilac", className: "note-color--lilac" }
+  { key: "white", className: "note-color--white" },
+  { key: "yellow", className: "note-color--yellow" },
+  { key: "green", className: "note-color--green" },
+  { key: "blue", className: "note-color--blue" },
+  { key: "pink", className: "note-color--pink" },
+  { key: "lilac", className: "note-color--lilac" }
 ];
 
-const starterNotes = [
-  {
-    id: crypto.randomUUID(),
-    title: "Morning Reflections",
-    body: "The light through the window falls in long oblique shafts, touching the dust motes suspended mid-air - small planets in their own right, orbiting nothing.",
-    color: "white",
-    updatedAt: Date.now() - 1000 * 60 * 5
+const TRANSLATIONS = {
+  en: {
+    appTitle: "Notes",
+    switchLanguage: "Switch language",
+    languageButton: "RU",
+    themeToggle: "Toggle theme",
+    noteTitlePlaceholder: "Take a note...",
+    noteBodyPlaceholder: "Write your thoughts...",
+    noteTitleAria: "Note title",
+    noteBodyAria: "Note body",
+    newNoteColorsAria: "Pick note color",
+    saveNote: "Save Note",
+    emptyTitle: "No notes found",
+    emptyText: "Create a new note to get started.",
+    editModalTitle: "Edit note",
+    closeEditor: "Close editor",
+    editTitlePlaceholder: "Title",
+    editBodyPlaceholder: "Write something beautiful...",
+    editColorsAria: "Change note color",
+    saveChanges: "Save Changes",
+    editNote: "Edit note",
+    deleteNote: "Delete note",
+    untitled: "Untitled",
+    justNow: "Just now",
+    minuteAgo: "min ago",
+    hourAgo: "h ago",
+    yesterday: "Yesterday",
+    daysAgo: "days ago",
+    colors: {
+      white: "Ivory",
+      yellow: "Honey",
+      green: "Sage",
+      blue: "Sky",
+      pink: "Rose",
+      lilac: "Lilac"
+    }
   },
-  {
-    id: crypto.randomUUID(),
-    title: "To Read",
-    body: "Middlemarch - George Eliot\nThe Brothers Karamazov\nEssays of Montaigne\nSebald, Rings of Saturn",
-    color: "green",
-    updatedAt: Date.now() - 1000 * 60 * 30
-  },
-  {
-    id: crypto.randomUUID(),
-    title: "On Solitude",
-    body: "Solitude is not loneliness. It is the condition in which one hears oneself think - not the noise one makes, but the quieter underneath.",
-    color: "lilac",
-    updatedAt: Date.now() - 1000 * 60 * 60 * 2
-  },
-  {
-    id: crypto.randomUUID(),
-    title: "",
-    body: "Buy oat milk, sourdough, aged comte, figs if in season.",
-    color: "yellow",
-    updatedAt: Date.now() - 1000 * 60 * 60 * 6
-  },
-  {
-    id: crypto.randomUUID(),
-    title: "Ideas",
-    body: "A lamp made of pressed botanicals.\nType specimen printed on vellum.\nWeekly letters instead of messages.",
-    color: "pink",
-    updatedAt: Date.now() - 1000 * 60 * 60 * 7
+  ru: {
+    appTitle: "Заметки",
+    switchLanguage: "Сменить язык",
+    languageButton: "EN",
+    themeToggle: "Сменить тему",
+    noteTitlePlaceholder: "Новая заметка...",
+    noteBodyPlaceholder: "Запишите свои мысли...",
+    noteTitleAria: "Заголовок заметки",
+    noteBodyAria: "Текст заметки",
+    newNoteColorsAria: "Выбрать цвет заметки",
+    saveNote: "Сохранить",
+    emptyTitle: "Заметок пока нет",
+    emptyText: "Создайте новую заметку, чтобы начать.",
+    editModalTitle: "Редактирование заметки",
+    closeEditor: "Закрыть редактор",
+    editTitlePlaceholder: "Заголовок",
+    editBodyPlaceholder: "Напишите что-нибудь красивое...",
+    editColorsAria: "Изменить цвет заметки",
+    saveChanges: "Сохранить изменения",
+    editNote: "Редактировать заметку",
+    deleteNote: "Удалить заметку",
+    untitled: "Без названия",
+    justNow: "Только что",
+    minuteAgo: "мин назад",
+    hourAgo: "ч назад",
+    yesterday: "Вчера",
+    daysAgo: "дн. назад",
+    colors: {
+      white: "Белый",
+      yellow: "Желтый",
+      green: "Зеленый",
+      blue: "Голубой",
+      pink: "Розовый",
+      lilac: "Сиреневый"
+    }
   }
-];
+};
+
+const initialLanguage = localStorage.getItem(STORAGE_KEYS.language) || "en";
 
 const elements = {
+  html: document.documentElement,
   body: document.body,
   notesGrid: document.getElementById("notes-grid"),
   emptyState: document.getElementById("empty-state"),
+  brandName: document.querySelector(".brand__name"),
   noteForm: document.getElementById("note-form"),
   noteTitle: document.getElementById("note-title"),
   noteBody: document.getElementById("note-body"),
@@ -63,13 +105,20 @@ const elements = {
   editTitle: document.getElementById("edit-title"),
   editBody: document.getElementById("edit-body"),
   editColors: document.getElementById("edit-note-colors"),
+  editModalTitle: document.getElementById("edit-modal-title"),
+  closeModalButton: document.querySelector("[data-close-modal][aria-label]"),
+  languageToggle: document.querySelector(".language-toggle"),
   themeToggle: document.querySelector(".theme-toggle"),
-  menuToggle: document.querySelector(".menu-toggle"),
-  noteTemplate: document.getElementById("note-card-template")
+  noteTemplate: document.getElementById("note-card-template"),
+  saveNoteButton: document.querySelector("#note-form .save-note"),
+  saveEditButton: document.querySelector("#edit-form .save-note"),
+  emptyTitle: document.querySelector("#empty-state h2"),
+  emptyText: document.querySelector("#empty-state p")
 };
 
 const state = {
-  notes: loadNotes(),
+  language: initialLanguage,
+  notes: loadNotes(initialLanguage),
   theme: localStorage.getItem(STORAGE_KEYS.theme) || "light",
   searchQuery: "",
   draftColor: "white",
@@ -78,17 +127,67 @@ const state = {
   composerExpanded: false
 };
 
-function loadNotes() {
+function createStarterNotes(language) {
+  const isRussian = language === "ru";
+
+  return [
+    {
+      id: crypto.randomUUID(),
+      title: isRussian ? "Утренние размышления" : "Morning Reflections",
+      body: isRussian
+        ? "Свет из окна ложится длинными косыми полосами, касаясь пылинок в воздухе - будто маленьких планет, вращающихся сами по себе."
+        : "The light through the window falls in long oblique shafts, touching the dust motes suspended mid-air - small planets in their own right, orbiting nothing.",
+      color: "white",
+      updatedAt: Date.now() - 1000 * 60 * 5
+    },
+    {
+      id: crypto.randomUUID(),
+      title: isRussian ? "К прочтению" : "To Read",
+      body: "Middlemarch - George Eliot\nThe Brothers Karamazov\nEssays of Montaigne\nSebald, Rings of Saturn",
+      color: "green",
+      updatedAt: Date.now() - 1000 * 60 * 30
+    },
+    {
+      id: crypto.randomUUID(),
+      title: isRussian ? "О уединении" : "On Solitude",
+      body: isRussian
+        ? "Уединение - не одиночество. Это состояние, в котором человек слышит собственные мысли - не внешний шум, а тихий внутренний голос."
+        : "Solitude is not loneliness. It is the condition in which one hears oneself think - not the noise one makes, but the quieter underneath.",
+      color: "lilac",
+      updatedAt: Date.now() - 1000 * 60 * 60 * 2
+    },
+    {
+      id: crypto.randomUUID(),
+      title: "",
+      body: isRussian
+        ? "Купить овсяное молоко, хлеб на закваске, выдержанный комте, инжир по сезону."
+        : "Buy oat milk, sourdough, aged comte, figs if in season.",
+      color: "yellow",
+      updatedAt: Date.now() - 1000 * 60 * 60 * 6
+    },
+    {
+      id: crypto.randomUUID(),
+      title: isRussian ? "Идеи" : "Ideas",
+      body: isRussian
+        ? "Лампа из прессованных ботанических листьев.\nНабор шрифтов, напечатанный на велене.\nЕженедельные письма вместо сообщений."
+        : "A lamp made of pressed botanicals.\nType specimen printed on vellum.\nWeekly letters instead of messages.",
+      color: "pink",
+      updatedAt: Date.now() - 1000 * 60 * 60 * 7
+    }
+  ];
+}
+
+function loadNotes(language) {
   const savedNotes = localStorage.getItem(STORAGE_KEYS.notes);
 
   if (!savedNotes) {
-    return starterNotes;
+    return createStarterNotes(language);
   }
 
   try {
     const parsed = JSON.parse(savedNotes);
     if (!Array.isArray(parsed)) {
-      return starterNotes;
+      return createStarterNotes(language);
     }
 
     return parsed.map((note) => ({
@@ -99,12 +198,16 @@ function loadNotes() {
       updatedAt: typeof note.updatedAt === "number" ? note.updatedAt : Date.now()
     }));
   } catch {
-    return starterNotes;
+    return createStarterNotes(language);
   }
 }
 
 function saveNotes() {
   localStorage.setItem(STORAGE_KEYS.notes, JSON.stringify(state.notes));
+}
+
+function saveLanguage() {
+  localStorage.setItem(STORAGE_KEYS.language, state.language);
 }
 
 function saveTheme() {
@@ -115,6 +218,14 @@ function applyTheme() {
   elements.body.classList.toggle("dark-theme", state.theme === "dark");
 }
 
+function t(key) {
+  return TRANSLATIONS[state.language][key];
+}
+
+function getColorLabel(colorKey) {
+  return TRANSLATIONS[state.language].colors[colorKey];
+}
+
 function createColorPicker(container, selectedColor, onSelect) {
   container.innerHTML = "";
 
@@ -123,8 +234,8 @@ function createColorPicker(container, selectedColor, onSelect) {
     swatch.type = "button";
     swatch.className = `color-swatch ${option.className}`;
     swatch.dataset.color = option.key;
-    swatch.title = option.label;
-    swatch.setAttribute("aria-label", option.label);
+    swatch.title = getColorLabel(option.key);
+    swatch.setAttribute("aria-label", getColorLabel(option.key));
     swatch.classList.toggle("is-selected", option.key === selectedColor);
     swatch.addEventListener("click", () => onSelect(option.key));
     container.appendChild(swatch);
@@ -144,25 +255,25 @@ function formatRelativeTime(timestamp) {
   const day = 24 * hour;
 
   if (diff < minute) {
-    return "Just now";
+    return t("justNow");
   }
 
   if (diff < hour) {
     const minutes = Math.round(diff / minute);
-    return `${minutes} min ago`;
+    return `${minutes} ${t("minuteAgo")}`;
   }
 
   if (diff < day) {
     const hours = Math.round(diff / hour);
-    return `${hours}h ago`;
+    return `${hours} ${t("hourAgo")}`;
   }
 
   if (diff < day * 2) {
-    return "Yesterday";
+    return t("yesterday");
   }
 
   const days = Math.round(diff / day);
-  return `${days} days ago`;
+  return `${days} ${t("daysAgo")}`;
 }
 
 function getColorClass(color) {
@@ -202,9 +313,11 @@ function renderNotes() {
     card.classList.add(getColorClass(note.color));
     card.style.animationDelay = `${index * 40}ms`;
 
-    title.textContent = note.title || "Untitled";
+    title.textContent = note.title || t("untitled");
     body.textContent = note.body;
     time.textContent = formatRelativeTime(note.updatedAt);
+    editButton.setAttribute("aria-label", t("editNote"));
+    deleteButton.setAttribute("aria-label", t("deleteNote"));
 
     editButton.addEventListener("click", () => openEditModal(note.id));
     deleteButton.addEventListener("click", () => deleteNote(note.id));
@@ -222,6 +335,7 @@ function resetComposer() {
   state.composerExpanded = false;
   updateComposerState();
   updatePickerSelection(elements.newNoteColors, state.draftColor);
+  applyLanguage();
 }
 
 function updateComposerState(forceExpand = false) {
@@ -352,6 +466,50 @@ function toggleTheme() {
   applyTheme();
   saveTheme();
 }
+
+function applyLanguage() {
+  const languagePack = TRANSLATIONS[state.language];
+
+  elements.html.lang = state.language;
+  document.title = languagePack.appTitle;
+  elements.brandName.textContent = languagePack.appTitle;
+  elements.languageToggle.textContent = languagePack.languageButton;
+  elements.languageToggle.setAttribute("aria-label", languagePack.switchLanguage);
+  elements.themeToggle.setAttribute("aria-label", languagePack.themeToggle);
+  elements.noteTitle.placeholder = languagePack.noteTitlePlaceholder;
+  elements.noteBody.placeholder = languagePack.noteBodyPlaceholder;
+  elements.noteTitle.setAttribute("aria-label", languagePack.noteTitleAria);
+  elements.noteBody.setAttribute("aria-label", languagePack.noteBodyAria);
+  elements.newNoteColors.setAttribute("aria-label", languagePack.newNoteColorsAria);
+  elements.saveNoteButton.textContent = languagePack.saveNote;
+  elements.emptyTitle.textContent = languagePack.emptyTitle;
+  elements.emptyText.textContent = languagePack.emptyText;
+  elements.editModalTitle.textContent = languagePack.editModalTitle;
+  elements.closeModalButton.setAttribute("aria-label", languagePack.closeEditor);
+  elements.editTitle.placeholder = languagePack.editTitlePlaceholder;
+  elements.editBody.placeholder = languagePack.editBodyPlaceholder;
+  elements.editColors.setAttribute("aria-label", languagePack.editColorsAria);
+  elements.saveEditButton.textContent = languagePack.saveChanges;
+
+  createColorPicker(elements.newNoteColors, state.draftColor, (color) => {
+    state.draftColor = color;
+    updatePickerSelection(elements.newNoteColors, state.draftColor);
+  });
+
+  createColorPicker(elements.editColors, state.editingColor, (color) => {
+    state.editingColor = color;
+    updatePickerSelection(elements.editColors, state.editingColor);
+  });
+
+  renderNotes();
+}
+
+function toggleLanguage() {
+  state.language = state.language === "en" ? "ru" : "en";
+  saveLanguage();
+  applyLanguage();
+}
+
 function closeSidebarOnMobile() {
   if (window.innerWidth <= 900) {
     document.body.classList.remove("sidebar-open");
@@ -380,6 +538,7 @@ function bindEvents() {
   elements.noteForm.addEventListener("focusout", () => {
     window.setTimeout(() => updateComposerState(false), 0);
   });
+  elements.languageToggle.addEventListener("click", toggleLanguage);
   elements.themeToggle.addEventListener("click", toggleTheme);
   elements.editModal.addEventListener("click", (event) => {
     if (event.target.hasAttribute("data-close-modal")) {
@@ -404,7 +563,7 @@ function init() {
   seedPickers();
   bindEvents();
   updateComposerState(false);
-  renderNotes();
+  applyLanguage();
 }
 
 init();
