@@ -483,6 +483,10 @@ body.dark-theme .note-card:hover {
   font-weight: 700;
   line-height: 1.15;
   flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .note-card__controls {
