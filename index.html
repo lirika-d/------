@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notes</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="topbar__left">
+        <button class="icon-button menu-toggle" type="button" aria-label="Toggle navigation">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 7h16M4 12h16M4 17h16"></path>
+          </svg>
+        </button>
+
+        <div class="brand">
+          <div class="brand__mark">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M8 3.75h8a2.25 2.25 0 0 1 2.25 2.25v12A2.25 2.25 0 0 1 16 20.25H8A2.25 2.25 0 0 1 5.75 18V6A2.25 2.25 0 0 1 8 3.75Z"></path>
+              <path d="M9.75 7.5h4.5"></path>
+            </svg>
+          </div>
+          <span class="brand__name">Notes</span>
+        </div>
+      </div>
+
+      <button class="icon-button theme-toggle" type="button" aria-label="Toggle theme">
+        <svg class="theme-toggle__icon theme-toggle__icon--moon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M15 4.5a7.5 7.5 0 1 0 4.5 13.5A8.25 8.25 0 1 1 15 4.5Z"></path>
+        </svg>
+        <svg class="theme-toggle__icon theme-toggle__icon--sun" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="4"></circle>
+          <path d="M12 2.75v2.5M12 18.75v2.5M21.25 12h-2.5M5.25 12h-2.5M18.54 5.46l-1.77 1.77M7.23 16.77l-1.77 1.77M18.54 18.54l-1.77-1.77M7.23 7.23 5.46 5.46"></path>
+        </svg>
+      </button>
+    </header>
+
+    <div class="layout">
+      <aside class="sidebar">
+        <nav class="sidebar__nav">
+          <button class="nav-item nav-item--active" type="button">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M7 3.75h6l4 4v12.5H7A2.25 2.25 0 0 1 4.75 18V6A2.25 2.25 0 0 1 7 3.75Z"></path>
+              <path d="M13 3.75v4h4"></path>
+            </svg>
+            <span>Notes</span>
+          </button>
+        </nav>
+      </aside>
+
+      <main class="content">
+        <section class="composer">
+          <form class="composer__form" id="note-form">
+            <input id="note-title" class="composer__title" type="text" maxlength="80" placeholder="Take a note..." aria-label="Note title">
+            <textarea id="note-body" class="composer__body" rows="4" maxlength="700" placeholder="Write your thoughts..." aria-label="Note body"></textarea>
+            <div class="composer__actions">
+              <div class="color-picker" id="new-note-colors" aria-label="Pick note color"></div>
+              <button class="save-note" type="submit">Save Note</button>
+            </div>
+          </form>
+        </section>
+
+        <section class="notes-section">
+          <div class="notes-grid" id="notes-grid"></div>
+          <div class="empty-state hidden" id="empty-state">
+            <h2>No notes found</h2>
+            <p>Create a new note or change the search query.</p>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <div class="modal hidden" id="edit-modal" aria-hidden="true">
+    <div class="modal__backdrop" data-close-modal></div>
+    <div class="modal__dialog" role="dialog" aria-modal="true" aria-labelledby="edit-modal-title">
+      <div class="modal__header">
+        <h2 id="edit-modal-title">Edit note</h2>
+        <button class="icon-button" type="button" data-close-modal aria-label="Close editor">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="m6 6 12 12M18 6 6 18"></path>
+          </svg>
+        </button>
+      </div>
+      <form id="edit-form" class="modal__form">
+        <input id="edit-title" type="text" maxlength="80" placeholder="Title">
+        <textarea id="edit-body" rows="8" maxlength="700" placeholder="Write something beautiful..."></textarea>
+        <div class="modal__footer">
+          <div class="color-picker" id="edit-note-colors" aria-label="Change note color"></div>
+          <button class="save-note" type="submit">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <template id="note-card-template">
+    <article class="note-card">
+      <div class="note-card__header">
+        <h3 class="note-card__title"></h3>
+        <div class="note-card__controls">
+          <button class="icon-button note-action note-edit" type="button" aria-label="Edit note">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="m4.75 16.75-.5 4.5 4.5-.5 9.65-9.65-4-4-9.65 9.65Z"></path>
+              <path d="m12.75 6.75 4 4"></path>
+            </svg>
+          </button>
+          <button class="icon-button note-action note-delete" type="button" aria-label="Delete note">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M6.75 7.75h10.5l-.65 10.34A2.25 2.25 0 0 1 14.36 20H9.64a2.25 2.25 0 0 1-2.24-1.91L6.75 7.75Z"></path>
+              <path d="M4.75 7.75h14.5M9 4.75h6l.75 3H8.25l.75-3Z"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <p class="note-card__body"></p>
+      <div class="note-card__footer">
+        <div class="color-picker note-card__palette"></div>
+        <time class="note-card__time"></time>
+      </div>
+    </article>
+  </template>
+
+  <script src="script.js"></script>
+</body>
+</html>
