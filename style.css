@@ -533,6 +533,7 @@ body.dark-theme .note-card:hover {
   white-space: pre-wrap;
   word-break: break-word;
   display: -webkit-box;
+  line-clamp: 5;
   -webkit-line-clamp: 5;
   -webkit-box-orient: vertical;
   overflow: hidden;
