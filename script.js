@@ -331,24 +331,18 @@ function renderNotes() {
 
 function resetComposer() {
   elements.noteForm.reset();
+
   state.draftColor = "white";
-  state.composerExpanded = false;
-  updateComposerState();
+
+  updateComposerState(false);
+
   updatePickerSelection(elements.newNoteColors, state.draftColor);
   applyLanguage();
 }
 
-function updateComposerState(forceExpand = false) {
-  if (forceExpand) {
-    state.composerExpanded = true;
-  } else {
-    const isComposerFocused = elements.noteForm.contains(document.activeElement);
-    state.composerExpanded = Boolean(
-      elements.noteTitle.value.trim() || elements.noteBody.value.trim() || isComposerFocused
-    );
-  }
-
-  elements.noteForm.classList.toggle("is-expanded", state.composerExpanded);
+function updateComposerState(expanded) {
+  state.composerExpanded = expanded;
+  elements.noteForm.classList.toggle("is-expanded", expanded);
 }
 
 function addNote(title, body) {
@@ -536,9 +530,6 @@ function bindEvents() {
   elements.noteBody.addEventListener("focus", () => updateComposerState(true));
   elements.noteTitle.addEventListener("input", () => updateComposerState(true));
   elements.noteBody.addEventListener("input", () => updateComposerState(true));
-  elements.noteForm.addEventListener("focusout", () => {
-    window.setTimeout(() => updateComposerState(false), 0);
-  });
   elements.languageToggle.addEventListener("click", toggleLanguage);
   elements.themeToggle.addEventListener("click", toggleTheme);
   elements.editModal.addEventListener("click", (event) => {
