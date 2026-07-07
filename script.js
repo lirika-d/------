@@ -342,8 +342,9 @@ function updateComposerState(forceExpand = false) {
   if (forceExpand) {
     state.composerExpanded = true;
   } else {
+    const isComposerFocused = elements.noteForm.contains(document.activeElement);
     state.composerExpanded = Boolean(
-      elements.noteTitle.value.trim() || elements.noteBody.value.trim() || document.activeElement === elements.noteTitle || document.activeElement === elements.noteBody
+      elements.noteTitle.value.trim() || elements.noteBody.value.trim() || isComposerFocused
     );
   }
 
