@@ -17,12 +17,13 @@ without any backend or external dependencies.
 
 -   ✍️ Create, edit, and delete notes
 -   🎨 Choose a color for each note
--   🌙 Light and dark themes
+-   🌙 Light and dark themes with Material Design shadows on hover
 -   🌍 English and Russian localization
 -   💾 Automatic saving with Local Storage
 -   ⏱ Relative timestamps
 -   📱 Responsive layout for desktop and mobile
 -   ✨ Smooth UI animations
+-   🎯 Drag and drop to reorder notes (HTML5 Drag and Drop API)
 
 ## Technologies
 
@@ -57,15 +58,41 @@ The application stores the following data in the browser using
 -   Notes
 -   Selected theme
 -   Selected language
+-   Custom note order (drag and drop)
+
+## How to Use
+
+### Creating a Note
+1. Click on the title field and enter your note title
+2. Click on the body field and write your content
+3. Choose a color from the color palette (optional)
+4. Click "Save Note"
+
+### Editing a Note
+1. Click the edit icon (pencil) on any note card
+2. Modify the title and/or content
+3. Change the color if needed
+4. Click "Save Changes"
+
+### Reordering Notes
+1. Click and hold on any note card
+2. Drag it over the note you want to swap with
+3. Release to drop it in place
+4. The order is automatically saved
+
+### Deleting a Note
+1. Click the delete icon (trash) on the note card
+2. The note is removed with a smooth animation
 
 ## Future Improvements
 
--   Search
--   Pin notes
--   Tags
+-   Search functionality (UI ready, backend prepared)
+-   Pin/unpin important notes
+-   Tags and categories
 -   Markdown support
--   Export / Import
+-   Export / Import (JSON)
 -   Cloud synchronization
+-   Note sharing
 
 ------------------------------------------------------------------------
 
@@ -82,12 +109,13 @@ JavaScript**. Приложение работает полностью в бра
 
 -   ✍️ Создание, редактирование и удаление заметок
 -   🎨 Выбор цвета заметок
--   🌙 Светлая и тёмная темы
+-   🌙 Светлая и тёмная темы с Material Design тенями при наведении
 -   🌍 Поддержка русского и английского языков
 -   💾 Автоматическое сохранение данных в Local Storage
 -   ⏱ Отображение относительного времени изменения заметок
 -   📱 Адаптивный интерфейс для компьютеров и мобильных устройств
 -   ✨ Плавные анимации интерфейса
+-   🎯 Перетаскивание для переупорядочивания заметок (HTML5 Drag and Drop API)
 
 ## Используемые технологии
 
@@ -120,16 +148,42 @@ JavaScript**. Приложение работает полностью в бра
 
 -   заметки;
 -   выбранная тема;
--   выбранный язык.
+-   выбранный язык;
+-   пользовательский порядок заметок (drag and drop).
+
+## Как использовать
+
+### Создание заметки
+1. Нажмите на поле заголовка и введите название заметки
+2. Нажмите на поле текста и напишите содержание
+3. Выберите цвет из палитры (опционально)
+4. Нажмите "Сохранить"
+
+### Редактирование заметки
+1. Нажмите на иконку редактирования (карандаш) на карточке заметки
+2. Измените заголовок и/или содержание
+3. Измените цвет при необходимости
+4. Нажмите "Сохранить изменения"
+
+### Переупорядочивание заметок
+1. Нажмите и удерживайте карточку заметки
+2. Перетащите её на заметку, с которой хотите поменяться местами
+3. Отпустите для сброса на место
+4. Порядок автоматически сохраняется
+
+### Удаление заметки
+1. Нажмите на иконку удаления (корзина) на карточке заметки
+2. Заметка удаляется с плавной анимацией
 
 ## Возможные улучшения
 
--   Поиск заметок
--   Закрепление заметок
+-   Функция поиска (UI готов, логика подготовлена)
+-   Закрепление/открепление важных заметок
 -   Теги и категории
 -   Поддержка Markdown
--   Экспорт и импорт
+-   Экспорт и импорт (JSON)
 -   Облачная синхронизация
+-   Общий доступ к заметкам
 
 ## License / Лицензия
 
