@@ -484,11 +484,11 @@ body.dark-theme .note-card {
 
 .note-card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 14px 24px rgba(107, 87, 66, 0.12), 0 4px 8px rgba(107, 87, 66, 0.08);
+  box-shadow: 0 14px 28px rgba(107, 87, 66, 0.25), 0 10px 10px rgba(107, 87, 66, 0.22);
 }
 
 body.dark-theme .note-card:hover {
-  box-shadow: 0 16px 26px rgba(0, 0, 0, 0.32), 0 4px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.35), 0 10px 10px rgba(0, 0, 0, 0.28);
 }
 
 .note-card.is-removing {
