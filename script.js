@@ -124,7 +124,8 @@ const state = {
   draftColor: "white",
   editingId: null,
   editingColor: "white",
-  composerExpanded: false
+  composerExpanded: false,
+  draggedIndex: null
 };
 
 function createStarterNotes(language) {
@@ -284,15 +285,90 @@ function getColorClass(color) {
 function getFilteredNotes() {
   const query = state.searchQuery.trim().toLowerCase();
 
-  return [...state.notes]
-    .sort((a, b) => b.updatedAt - a.updatedAt)
-    .filter((note) => {
-      if (!query) {
-        return true;
-      }
+  return state.notes.filter((note) => {
+    if (!query) {
+      return true;
+    }
 
-      return `${note.title} ${note.body}`.toLowerCase().includes(query);
-    });
+    return `${note.title} ${note.body}`.toLowerCase().includes(query);
+  });
+}
+
+function handleDragStart(event, index) {
+  const filteredNotes = getFilteredNotes();
+  const draggedNote = filteredNotes[index];
+
+  state.draggedIndex = index;
+  event.dataTransfer.effectAllowed = "move";
+  event.dataTransfer.setData("text/plain", draggedNote.id);
+  event.target.classList.add("is-dragging");
+}
+
+function handleDragEnd(event) {
+  event.target.classList.remove("is-dragging");
+  state.draggedIndex = null;
+  document.querySelectorAll(".note-card").forEach((card) => {
+    card.classList.remove("drag-over");
+  });
+}
+
+function handleDragOver(event) {
+  event.preventDefault();
+  event.dataTransfer.dropEffect = "move";
+}
+
+function handleDragEnter(event) {
+  event.currentTarget.classList.add("drag-over");
+}
+
+function handleDragLeave(event) {
+  const card = event.currentTarget;
+  if (!card.contains(event.relatedTarget)) {
+    card.classList.remove("drag-over");
+  }
+}
+
+function handleDrop(event, dropIndex) {
+  event.preventDefault();
+  event.stopPropagation();
+
+  const draggedId = event.dataTransfer.getData("text/plain");
+  document.querySelectorAll(".note-card").forEach((card) => {
+    card.classList.remove("drag-over");
+  });
+
+  if (state.draggedIndex === null || state.draggedIndex === dropIndex) {
+    return;
+  }
+
+  const filteredNotes = getFilteredNotes();
+  const draggedNote = filteredNotes[state.draggedIndex];
+
+  if (draggedNote.id !== draggedId) {
+    return;
+  }
+
+  const draggedNoteIndex = state.notes.findIndex((n) => n.id === draggedId);
+  const targetId = filteredNotes[dropIndex].id;
+  const targetNoteIndex = state.notes.findIndex((n) => n.id === targetId);
+
+  if (draggedNoteIndex === -1 || targetNoteIndex === -1) {
+    return;
+  }
+
+  const newNotes = [...state.notes];
+  newNotes.splice(draggedNoteIndex, 1);
+
+  let insertAt = newNotes.findIndex((n) => n.id === targetId);
+  if (draggedNoteIndex < targetNoteIndex) {
+    insertAt += 1;
+  }
+
+  newNotes.splice(insertAt, 0, draggedNote);
+
+  state.notes = newNotes;
+  saveNotes();
+  renderNotes();
 }
 
 function renderNotes() {
@@ -321,6 +397,13 @@ function renderNotes() {
 
     editButton.addEventListener("click", () => openEditModal(note.id));
     deleteButton.addEventListener("click", () => deleteNote(note.id));
+
+    card.addEventListener("dragstart", (e) => handleDragStart(e, index));
+    card.addEventListener("dragend", handleDragEnd);
+    card.addEventListener("dragover", handleDragOver);
+    card.addEventListener("dragenter", handleDragEnter);
+    card.addEventListener("dragleave", handleDragLeave);
+    card.addEventListener("drop", (e) => handleDrop(e, index));
 
     createColorPicker(palette, note.color, (color) => changeNoteColor(note.id, color));
     elements.notesGrid.appendChild(fragment);
